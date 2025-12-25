@@ -24,7 +24,7 @@
     --muted: 210 15% 94%;
     --muted-foreground: 220 10% 45%;
 
-    --accent: 36 95% 55%;
+    --accent: 27 92% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -37,7 +37,7 @@
     --radius: 0.75rem;
 
     /* Custom tokens */
-    --highlight: 36 95% 55%;
+    --highlight: 27 92% 55%;
     --highlight-foreground: 0 0% 100%;
     --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
@@ -71,7 +71,7 @@
     --muted: 220 15% 20%;
     --muted-foreground: 210 10% 60%;
 
-    --accent: 36 95% 55%;
+    --accent: 27 92% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
