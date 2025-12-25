@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { PriceEntry, QuotationAnalysis } from "@/types/PriceEntry";
+import { PriceEntry, QuotationAnalysis, MarketComparison } from "@/types/PriceEntry";
 import Header from "@/components/Header";
 import PriceEntryForm from "@/components/PriceEntryForm";
 import AnalysisResultsPanel from "@/components/AnalysisResultsPanel";
+import FavoritesPanel from "@/components/FavoritesPanel";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [entries, setEntries] = useState<PriceEntry[]>([]);
   const [analysis, setAnalysis] = useState<QuotationAnalysis | null>(null);
   const [analysisLocation, setAnalysisLocation] = useState("");
-
+  const [favorites, setFavorites] = useState<MarketComparison[]>([]);
   const handleAddEntry = (newEntry: Omit<PriceEntry, "id" | "createdAt">) => {
     const entry: PriceEntry = {
       ...newEntry,
@@ -37,6 +38,25 @@ const Index = () => {
     }
   };
 
+  const handleAddToFavorites = (item: MarketComparison) => {
+    setFavorites((prev) => [...prev, item]);
+  };
+
+  const handleRemoveFavorite = (index: number) => {
+    setFavorites((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleClearFavorites = () => {
+    setFavorites([]);
+    toast({
+      title: "Favorites Cleared",
+      description: "All saved vendors have been removed.",
+    });
+  };
+
+  // Calculate estimated price from analysis for manual entry
+  const estimatedPrice = analysis?.summary?.estimatedMarketRange || null;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -60,15 +80,25 @@ const Index = () => {
               <PriceEntryForm
                 onAddEntry={handleAddEntry}
                 onAnalysisComplete={handleAnalysisComplete}
+                estimatedPrice={estimatedPrice}
               />
             </div>
           </div>
 
           {/* Results Panel */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 space-y-6">
+            {/* Favorites Panel */}
+            <FavoritesPanel
+              favorites={favorites}
+              onRemove={handleRemoveFavorite}
+              onClear={handleClearFavorites}
+            />
+
             <AnalysisResultsPanel
               analysis={analysis}
               location={analysisLocation}
+              favorites={favorites}
+              onAddToFavorites={handleAddToFavorites}
             />
           </div>
         </div>
@@ -77,7 +107,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-16 py-6">
         <div className="max-w-7xl mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground">
-          <p>PriceScoutAI — AI-powered local price research</p>
+          <p>Vee Price Comparison — AI-powered local price research</p>
         </div>
       </footer>
     </div>

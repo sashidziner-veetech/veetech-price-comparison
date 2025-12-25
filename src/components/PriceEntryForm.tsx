@@ -14,9 +14,10 @@ import { QuotationAnalysis } from "@/types/PriceEntry";
 interface PriceEntryFormProps {
   onAddEntry: (entry: Omit<PriceEntry, "id" | "createdAt">) => void;
   onAnalysisComplete: (analysis: QuotationAnalysis, location: string) => void;
+  estimatedPrice?: { min: number; max: number } | null;
 }
 
-const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps) => {
+const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: PriceEntryFormProps) => {
   const [location, setLocation] = useState("");
   const [manualLocation, setManualLocation] = useState("");
   const [productName, setProductName] = useState("");
@@ -25,6 +26,13 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps)
   const [isManualSearching, setIsManualSearching] = useState(false);
   const [uploadedContent, setUploadedContent] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(price);
+  };
 
   const handleManualSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,6 +246,29 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps)
                 className="h-11"
               />
             </div>
+
+            {/* Estimated Price Display */}
+            {estimatedPrice && (
+              <div className="p-4 bg-success/10 border border-success rounded-lg animate-fade-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                  <span className="text-sm font-semibold text-success uppercase tracking-wide">
+                    Estimated Market Price
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-foreground">
+                  ₹{formatPrice(estimatedPrice.min)}
+                  {estimatedPrice.min !== estimatedPrice.max && (
+                    <span className="text-lg font-normal text-muted-foreground">
+                      {" - "}₹{formatPrice(estimatedPrice.max)}
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Based on {manualLocation} vendor prices
+                </p>
+              </div>
+            )}
 
             <Button 
               type="submit" 

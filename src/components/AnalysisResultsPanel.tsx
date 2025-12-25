@@ -15,18 +15,43 @@ import {
   Minus,
   AlertCircle,
   ExternalLink,
+  Heart,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface AnalysisResultsPanelProps {
   analysis: QuotationAnalysis | null;
   location: string;
+  favorites: MarketComparison[];
+  onAddToFavorites: (item: MarketComparison) => void;
 }
 
-const AnalysisResultsPanel = ({ analysis, location }: AnalysisResultsPanelProps) => {
+const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites }: AnalysisResultsPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  const isFavorite = (item: MarketComparison) => {
+    return favorites.some(
+      (f) => f.vendorName === item.vendorName && f.productName === item.productName && f.location === item.location
+    );
+  };
+
+  const handleAddToFavorites = (item: MarketComparison) => {
+    if (isFavorite(item)) {
+      toast({
+        title: "Already in Favorites",
+        description: "This vendor is already saved to your favorites.",
+      });
+      return;
+    }
+    onAddToFavorites(item);
+    toast({
+      title: "Added to Favorites",
+      description: `${item.vendorName} has been saved for comparison.`,
+    });
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -330,17 +355,28 @@ const AnalysisResultsPanel = ({ analysis, location }: AnalysisResultsPanelProps)
                   )}
                 </div>
 
-                <div className="text-right flex-shrink-0">
-                  <p className="text-xl font-bold text-foreground flex items-center gap-0.5">
-                    <IndianRupee className="w-5 h-5" />
-                    {formatPrice(item.priceRange.min)}
-                    {item.priceRange.min !== item.priceRange.max && (
-                      <span className="text-base font-normal text-muted-foreground">
-                        {" - "}₹{formatPrice(item.priceRange.max)}
-                      </span>
-                    )}
-                  </p>
-                  <span className="text-xs text-muted-foreground">VENDOR PRICE</span>
+                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-foreground flex items-center gap-0.5">
+                      <IndianRupee className="w-5 h-5" />
+                      {formatPrice(item.priceRange.min)}
+                      {item.priceRange.min !== item.priceRange.max && (
+                        <span className="text-base font-normal text-muted-foreground">
+                          {" - "}₹{formatPrice(item.priceRange.max)}
+                        </span>
+                      )}
+                    </p>
+                    <span className="text-xs text-muted-foreground">VENDOR PRICE</span>
+                  </div>
+                  <Button
+                    variant={isFavorite(item) ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => handleAddToFavorites(item)}
+                    className="gap-1.5"
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite(item) ? "fill-primary text-primary" : ""}`} />
+                    {isFavorite(item) ? "Saved" : "Save"}
+                  </Button>
                 </div>
               </div>
             </div>
