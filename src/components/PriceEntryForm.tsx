@@ -22,6 +22,7 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
   const [manualLocation, setManualLocation] = useState("");
   const [productName, setProductName] = useState("");
   const [specifications, setSpecifications] = useState("");
+  const [quotedPrice, setQuotedPrice] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isManualSearching, setIsManualSearching] = useState(false);
   const [uploadedContent, setUploadedContent] = useState<string | null>(null);
@@ -247,7 +248,28 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
               />
             </div>
 
-            {/* Price Field - Auto-populated from results */}
+            {/* Your Quoted Price - Editable */}
+            <div className="space-y-2">
+              <Label htmlFor="quotedPrice" className="text-sm font-medium text-foreground">
+                Your Quoted Price
+              </Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">₹</span>
+                <Input
+                  id="quotedPrice"
+                  type="number"
+                  value={quotedPrice}
+                  onChange={(e) => setQuotedPrice(e.target.value)}
+                  placeholder="Enter your quoted price..."
+                  className="h-11 pl-8"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Enter the price you've been quoted for comparison
+              </p>
+            </div>
+
+            {/* Estimated Market Price - Read-only from results */}
             <div className="space-y-2">
               <Label htmlFor="estimatedPrice" className="text-sm font-medium text-foreground">
                 Estimated Market Price
