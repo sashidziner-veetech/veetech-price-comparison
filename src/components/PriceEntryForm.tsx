@@ -247,28 +247,38 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
               />
             </div>
 
-            {/* Estimated Price Display */}
-            {estimatedPrice && (
-              <div className="p-4 bg-success/10 border border-success rounded-lg animate-fade-in">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                  <span className="text-sm font-semibold text-success uppercase tracking-wide">
-                    Estimated Market Price
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-foreground">
-                  ₹{formatPrice(estimatedPrice.min)}
-                  {estimatedPrice.min !== estimatedPrice.max && (
-                    <span className="text-lg font-normal text-muted-foreground">
-                      {" - "}₹{formatPrice(estimatedPrice.max)}
-                    </span>
-                  )}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Based on {manualLocation} vendor prices
-                </p>
+            {/* Price Field - Auto-populated from results */}
+            <div className="space-y-2">
+              <Label htmlFor="estimatedPrice" className="text-sm font-medium text-foreground">
+                Estimated Market Price
+              </Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">₹</span>
+                <Input
+                  id="estimatedPrice"
+                  value={
+                    estimatedPrice
+                      ? estimatedPrice.min === estimatedPrice.max
+                        ? formatPrice(estimatedPrice.min)
+                        : `${formatPrice(estimatedPrice.min)} - ${formatPrice(estimatedPrice.max)}`
+                      : ""
+                  }
+                  readOnly
+                  placeholder="Price will appear after search..."
+                  className={`h-11 pl-8 ${
+                    estimatedPrice 
+                      ? "bg-success/10 border-success text-foreground font-semibold" 
+                      : "bg-muted/50"
+                  }`}
+                />
               </div>
-            )}
+              {estimatedPrice && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                  Based on {manualLocation || "location"} vendor prices
+                </p>
+              )}
+            </div>
 
             <Button 
               type="submit" 
