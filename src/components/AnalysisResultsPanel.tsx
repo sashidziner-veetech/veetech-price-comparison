@@ -74,7 +74,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
       "Contact",
     ];
 
-    const quotedRows = analysis.quotedItems.map((item) => [
+    const quotedRows = (analysis.quotedItems || []).map((item) => [
       "Your Quotation",
       item.name,
       "-",
@@ -84,7 +84,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
       "-",
     ]);
 
-    const marketRows = analysis.marketComparisons.map((item) => [
+    const marketRows = (analysis.marketComparisons || []).map((item) => [
       "Market Price",
       item.productName,
       item.vendorName,
@@ -107,7 +107,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
     URL.revokeObjectURL(url);
   };
 
-  const filteredComparisons = analysis?.marketComparisons.filter((item) => {
+  const filteredComparisons = (analysis?.marketComparisons || []).filter((item) => {
     const minPriceNum = parseFloat(minPrice) || 0;
     const maxPriceNum = parseFloat(maxPrice) || Infinity;
     const matchesPrice =
@@ -179,10 +179,10 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-foreground">
-              Results ({analysis.marketComparisons.length} vendors)
+              Results ({(analysis.marketComparisons || []).length} vendors)
             </h2>
             <p className="text-sm text-muted-foreground">
-              {analysis.quotedItems.length} items compared in {location}
+              {(analysis.quotedItems || []).length} items compared in {location}
             </p>
           </div>
 
@@ -262,7 +262,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
           Your Quoted Items
         </h3>
         <div className="space-y-3">
-          {analysis.quotedItems.map((item, index) => (
+          {(analysis.quotedItems || []).map((item, index) => (
             <div
               key={index}
               className="p-4 bg-accent/10 border-2 border-accent rounded-lg animate-fade-in"
@@ -295,10 +295,10 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
       {/* Market Comparisons */}
       <div className="p-4 md:p-6">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
-          Market Prices ({filteredComparisons?.length || 0})
+          Market Prices ({filteredComparisons.length})
         </h3>
         <div className="space-y-4">
-          {filteredComparisons?.map((item, index) => (
+          {filteredComparisons.map((item, index) => (
             <div
               key={index}
               className="p-5 bg-card border border-border rounded-xl shadow-card hover:shadow-card-hover transition-shadow animate-slide-up"
@@ -383,7 +383,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
             </div>
           ))}
 
-          {filteredComparisons?.length === 0 && (
+          {filteredComparisons.length === 0 && (
             <div className="text-center py-8">
               <p className="text-sm text-muted-foreground">
                 No vendors match your current filters.
