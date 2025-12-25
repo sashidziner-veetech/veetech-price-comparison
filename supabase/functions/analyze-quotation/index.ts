@@ -11,9 +11,9 @@ serve(async (req) => {
   }
 
   try {
-    const { quotationText, location, productName, specifications, mode } = await req.json();
+    const { quotationText, location, productName, specifications, mode, quotedPrice } = await req.json();
     
-    console.log('Analyzing for location:', location, 'Mode:', mode || 'quotation');
+    console.log('Analyzing for location:', location, 'Mode:', mode || 'quotation', 'Quoted Price:', quotedPrice);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -23,15 +23,24 @@ serve(async (req) => {
     // Different prompts for quotation analysis vs manual product search
     const isManualSearch = mode === 'manual';
     
+    const userQuotedPrice = typeof quotedPrice === 'number' ? quotedPrice : 0;
+    
     const systemPrompt = isManualSearch 
       ? `You are a price comparison research assistant for India. When given a product name and specifications, you must:
 
 1. Research and provide realistic market price comparisons from vendors in the specified location
 2. Include actual vendor names, realistic addresses, phone numbers, and price ranges
-3. Return structured data in this exact JSON format:
+3. The user has provided a quoted price of ₹${userQuotedPrice} - include this in quotedItems and summary
+4. Return structured data in this exact JSON format:
 
 {
-  "quotedItems": [],
+  "quotedItems": [
+    {
+      "name": "Product name from user",
+      "specifications": "User provided specifications",
+      "quotedPrice": ${userQuotedPrice}
+    }
+  ],
   "marketComparisons": [
     {
       "productName": "Product name with model/variant",
@@ -45,9 +54,9 @@ serve(async (req) => {
     }
   ],
   "summary": {
-    "totalQuotedAmount": 0,
+    "totalQuotedAmount": ${userQuotedPrice},
     "estimatedMarketRange": { "min": 10000, "max": 15000 },
-    "recommendation": "Brief recommendation about the best deals found"
+    "recommendation": "Brief recommendation comparing the quoted price ₹${userQuotedPrice} against market prices"
   }
 }
 

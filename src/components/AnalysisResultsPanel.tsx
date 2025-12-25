@@ -54,10 +54,11 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
   };
 
   const formatPrice = (price: number) => {
+    const safePrice = typeof price === 'number' && !isNaN(price) ? price : 0;
     return new Intl.NumberFormat("en-IN", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(price);
+    }).format(safePrice);
   };
 
   const exportToCSV = () => {

@@ -50,12 +50,15 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
     setIsManualSearching(true);
 
     try {
+      const parsedQuotedPrice = parseFloat(quotedPrice) || 0;
+      
       const { data, error } = await supabase.functions.invoke("analyze-quotation", {
         body: {
           mode: "manual",
           productName: productName.trim(),
           specifications: specifications.trim(),
           location: manualLocation.trim(),
+          quotedPrice: parsedQuotedPrice,
         },
       });
 
