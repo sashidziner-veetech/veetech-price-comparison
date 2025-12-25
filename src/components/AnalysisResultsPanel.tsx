@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Minus,
   AlertCircle,
+  ExternalLink,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -308,6 +309,17 @@ const AnalysisResultsPanel = ({ analysis, location }: AnalysisResultsPanelProps)
                         <Phone className="w-3.5 h-3.5" />
                         <span>{item.phone}</span>
                       </div>
+                    )}
+                    {item.website && (
+                      <a
+                        href={item.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-primary hover:underline"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Visit Store</span>
+                      </a>
                     )}
                   </div>
 
