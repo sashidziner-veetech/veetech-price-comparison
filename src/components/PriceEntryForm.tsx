@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardCheck, Plus, IndianRupee, FileUp, Loader2 } from "lucide-react";
+import { ClipboardCheck, Plus, Search, FileUp, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import LocationAutocomplete from "./LocationAutocomplete";
 import FileUpload from "./FileUpload";
@@ -18,51 +18,61 @@ interface PriceEntryFormProps {
 
 const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps) => {
   const [location, setLocation] = useState("");
+  const [manualLocation, setManualLocation] = useState("");
   const [productName, setProductName] = useState("");
   const [specifications, setSpecifications] = useState("");
-  const [price, setPrice] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isManualSearching, setIsManualSearching] = useState(false);
   const [uploadedContent, setUploadedContent] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
-  const handleManualSubmit = (e: React.FormEvent) => {
+  const handleManualSearch = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!location.trim() || !productName.trim() || !price.trim()) {
+    if (!manualLocation.trim() || !productName.trim()) {
       toast({
         title: "Missing Fields",
-        description: "Please fill in location, product name, and price.",
+        description: "Please fill in product name and target location.",
         variant: "destructive",
       });
       return;
     }
 
-    const priceValue = parseFloat(price);
-    if (isNaN(priceValue) || priceValue <= 0) {
+    setIsManualSearching(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-quotation", {
+        body: {
+          mode: "manual",
+          productName: productName.trim(),
+          specifications: specifications.trim(),
+          location: manualLocation.trim(),
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.success && data?.data) {
+        onAnalysisComplete(data.data as QuotationAnalysis, manualLocation.trim());
+        toast({
+          title: "Search Complete",
+          description: "Price comparison results are ready.",
+        });
+      } else if (data?.error) {
+        throw new Error(data.error);
+      }
+    } catch (err) {
+      console.error("Manual search error:", err);
       toast({
-        title: "Invalid Price",
-        description: "Please enter a valid price.",
+        title: "Search Failed",
+        description: err instanceof Error ? err.message : "Failed to search prices",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsManualSearching(false);
     }
-
-    onAddEntry({
-      location: location.trim(),
-      productName: productName.trim(),
-      specifications: specifications.trim(),
-      price: priceValue,
-      isQuoted: true,
-    });
-
-    setProductName("");
-    setSpecifications("");
-    setPrice("");
-
-    toast({
-      title: "Entry Added",
-      description: "Your price entry has been added successfully.",
-    });
   };
 
   const handleFileContent = (content: string, fileName: string) => {
@@ -191,7 +201,7 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps)
         </TabsContent>
 
         <TabsContent value="manual">
-          <form onSubmit={handleManualSubmit} className="space-y-5">
+          <form onSubmit={handleManualSearch} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="productName" className="text-sm font-medium text-foreground">
                 Product Name
@@ -200,7 +210,7 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps)
                 id="productName"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                placeholder="e.g., Samsung Galaxy S24, Pressure Cooker 5L"
+                placeholder="e.g., Acer laptop, Samsung Galaxy S24"
                 className="h-11"
               />
             </div>
@@ -210,49 +220,41 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete }: PriceEntryFormProps)
                 Target Location
               </Label>
               <LocationAutocomplete
-                value={location}
-                onChange={setLocation}
+                value={manualLocation}
+                onChange={setManualLocation}
                 placeholder="Search city, area, or pincode..."
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="price" className="text-sm font-medium text-foreground">
-                  Quoted Price
-                </Label>
-                <div className="relative">
-                  <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder="0.00"
-                    className="h-11 pl-9"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="specifications" className="text-sm font-medium text-foreground">
-                  Condition/Specs
-                </Label>
-                <Input
-                  id="specifications"
-                  value={specifications}
-                  onChange={(e) => setSpecifications(e.target.value)}
-                  placeholder="HSN/SAC, Model, Size..."
-                  className="h-11"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="specifications" className="text-sm font-medium text-foreground">
+                Specific Requirements
+              </Label>
+              <Input
+                id="specifications"
+                value={specifications}
+                onChange={(e) => setSpecifications(e.target.value)}
+                placeholder="e.g., 512GB Hard Disk, 8GB Ram, Model XYZ..."
+                className="h-11"
+              />
             </div>
 
-            <Button type="submit" className="w-full h-12 text-base font-medium gap-2">
-              <Plus className="w-5 h-5" />
-              Add Entry
+            <Button 
+              type="submit" 
+              disabled={isManualSearching || !productName.trim() || !manualLocation.trim()}
+              className="w-full h-12 text-base font-medium gap-2"
+            >
+              {isManualSearching ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Searching Prices...
+                </>
+              ) : (
+                <>
+                  <Search className="w-5 h-5" />
+                  Compare Live Prices
+                </>
+              )}
             </Button>
           </form>
         </TabsContent>
