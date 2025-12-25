@@ -33,7 +33,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
   const [maxPrice, setMaxPrice] = useState("");
 
   const isFavorite = (item: MarketComparison) => {
-    return favorites.some(
+    return (favorites || []).some(
       (f) => f.vendorName === item.vendorName && f.productName === item.productName && f.location === item.location
     );
   };
