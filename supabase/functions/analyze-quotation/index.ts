@@ -40,6 +40,7 @@ serve(async (req) => {
       "priceRange": { "min": 1000, "max": 1500 },
       "address": "Full address",
       "phone": "Contact number",
+      "website": "https://vendorwebsite.com or null if not available",
       "notes": "Specifications, availability notes, special offers etc."
     }
   ],
@@ -73,6 +74,7 @@ Provide 5-10 realistic vendor comparisons. Include department stores, local shop
       "priceRange": { "min": 1000, "max": 1500 },
       "address": "Full address",
       "phone": "Contact number if known",
+      "website": "https://vendorwebsite.com or null if not available",
       "notes": "Any relevant notes about availability, quality, etc."
     }
   ],

@@ -28,6 +28,7 @@ export interface MarketComparison {
   };
   address?: string;
   phone?: string;
+  website?: string;
   notes?: string;
 }
 
