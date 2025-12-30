@@ -9,7 +9,7 @@ const Header = () => {
             <Search className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
           </div>
           <span className="text-base sm:text-xl font-bold text-foreground truncate">
-            Vee <span className="text-primary">Price</span>
+            Vee <span className="text-primary">Price Comparison</span>
           </span>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground flex-shrink-0">
