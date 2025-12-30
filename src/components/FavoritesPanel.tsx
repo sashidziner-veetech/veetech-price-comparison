@@ -67,31 +67,31 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
         </div>
 
         {/* Comparison Summary */}
-        <div className="mt-4 p-4 bg-secondary/50 rounded-lg">
+        <div className="mt-4 p-3 sm:p-4 bg-secondary/50 rounded-lg">
           <div className="flex items-center gap-2 mb-3">
-            <Scale className="w-4 h-4 text-primary" />
+            <Scale className="w-4 h-4 text-primary flex-shrink-0" />
             <span className="text-sm font-semibold text-foreground">Price Comparison</span>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Lowest</p>
-              <p className="text-lg font-bold text-success flex items-center gap-0.5">
-                <IndianRupee className="w-4 h-4" />
-                {formatPrice(lowestPrice)}
+              <p className="text-sm sm:text-lg font-bold text-success flex items-center gap-0.5">
+                <IndianRupee className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{formatPrice(lowestPrice)}</span>
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Average</p>
-              <p className="text-lg font-bold text-foreground flex items-center gap-0.5">
-                <IndianRupee className="w-4 h-4" />
-                {formatPrice(avgPrice)}
+              <p className="text-sm sm:text-lg font-bold text-foreground flex items-center gap-0.5">
+                <IndianRupee className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{formatPrice(avgPrice)}</span>
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Highest</p>
-              <p className="text-lg font-bold text-destructive flex items-center gap-0.5">
-                <IndianRupee className="w-4 h-4" />
-                {formatPrice(highestPrice)}
+              <p className="text-sm sm:text-lg font-bold text-destructive flex items-center gap-0.5">
+                <IndianRupee className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{formatPrice(highestPrice)}</span>
               </p>
             </div>
           </div>
@@ -107,15 +107,15 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
             return (
               <div
                 key={index}
-                className={`p-4 border rounded-xl transition-all animate-fade-in ${
+                className={`p-3 sm:p-4 border rounded-xl transition-all animate-fade-in ${
                   isLowest 
                     ? "bg-success/10 border-success" 
                     : "bg-card border-border"
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
                       {isLowest && (
                         <Badge variant="default" className="bg-success text-success-foreground text-xs">
                           BEST PRICE
@@ -133,17 +133,17 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
                       {item.productName}
                     </h4>
 
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-muted-foreground">
                       {item.vendorName && (
                         <div className="flex items-center gap-1.5">
-                          <Store className="w-3.5 h-3.5" />
-                          <span className="font-medium">{item.vendorName}</span>
+                          <Store className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="font-medium truncate">{item.vendorName}</span>
                         </div>
                       )}
                       {item.phone && (
                         <div className="flex items-center gap-1.5">
-                          <Phone className="w-3.5 h-3.5" />
-                          <span>{item.phone}</span>
+                          <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">{item.phone}</span>
                         </div>
                       )}
                       {item.website && (
@@ -153,20 +153,20 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
                           rel="noopener noreferrer"
                           className="flex items-center gap-1.5 text-primary hover:underline"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          <span>Visit Store</span>
+                          <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span>Visit</span>
                         </a>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <div className="text-right">
-                      <p className="text-xl font-bold text-foreground flex items-center gap-0.5">
-                        <IndianRupee className="w-5 h-5" />
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+                    <div className="text-left sm:text-right">
+                      <p className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-0.5">
+                        <IndianRupee className="w-4 sm:w-5 h-4 sm:h-5" />
                         {formatPrice(item.priceRange.min)}
                         {item.priceRange.min !== item.priceRange.max && (
-                          <span className="text-base font-normal text-muted-foreground">
+                          <span className="text-sm sm:text-base font-normal text-muted-foreground">
                             {" - "}₹{formatPrice(item.priceRange.max)}
                           </span>
                         )}
@@ -176,7 +176,7 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
                       variant="ghost"
                       size="icon"
                       onClick={() => onRemove(index)}
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive flex-shrink-0"
                     >
                       <X className="w-4 h-4" />
                     </Button>

@@ -199,23 +199,23 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
 
         {/* Summary Card */}
         {analysis.summary && (
-          <div className="mt-4 p-4 bg-secondary/50 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="mt-4 p-3 sm:p-4 bg-secondary/50 rounded-lg">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">Your Quote</p>
-                <p className="text-xl font-bold text-foreground flex items-center gap-1">
-                  <IndianRupee className="w-5 h-5" />
+                <p className="text-base sm:text-xl font-bold text-foreground flex items-center gap-0.5 sm:gap-1">
+                  <IndianRupee className="w-4 sm:w-5 h-4 sm:h-5" />
                   {formatPrice(analysis.summary.totalQuotedAmount)}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">Market Range</p>
-                <p className="text-xl font-bold text-foreground flex items-center gap-1">
+                <p className="text-base sm:text-xl font-bold text-foreground flex items-center gap-0.5 sm:gap-1">
                   <IndianRupee className="w-4 h-4" />
-                  {formatPrice(analysis.summary.estimatedMarketRange.min)} - {formatPrice(analysis.summary.estimatedMarketRange.max)}
+                  <span className="truncate">{formatPrice(analysis.summary.estimatedMarketRange.min)} - {formatPrice(analysis.summary.estimatedMarketRange.max)}</span>
                 </p>
               </div>
-              <div>
+              <div className="col-span-2 sm:col-span-1">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">Verdict</p>
                 <p className="text-sm font-medium text-foreground">
                   {analysis.summary.recommendation}
@@ -226,14 +226,14 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
         )}
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 mt-4">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search products or vendors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9"
+              className="pl-9 h-9 w-full"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -242,15 +242,15 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
               placeholder="Min ₹"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="w-24 h-9"
+              className="w-full sm:w-24 h-9"
             />
-            <span className="text-muted-foreground">–</span>
+            <span className="text-muted-foreground flex-shrink-0">–</span>
             <Input
               type="number"
               placeholder="Max ₹"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-24 h-9"
+              className="w-full sm:w-24 h-9"
             />
           </div>
         </div>
@@ -301,10 +301,10 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
           {filteredComparisons.map((item, index) => (
             <div
               key={index}
-              className="p-5 bg-card border border-border rounded-xl shadow-card hover:shadow-card-hover transition-shadow animate-slide-up"
+              className="p-4 sm:p-5 bg-card border border-border rounded-xl shadow-card hover:shadow-card-hover transition-shadow animate-slide-up"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
                     <MapPin className="w-3.5 h-3.5 text-primary flex-shrink-0" />
@@ -323,17 +323,17 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
                     </p>
                   )}
 
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                     {item.vendorName && (
                       <div className="flex items-center gap-1.5">
-                        <Store className="w-3.5 h-3.5" />
-                        <span className="text-primary font-medium">{item.vendorName}</span>
+                        <Store className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="text-primary font-medium truncate">{item.vendorName}</span>
                       </div>
                     )}
                     {item.phone && (
                       <div className="flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>{item.phone}</span>
+                        <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="truncate">{item.phone}</span>
                       </div>
                     )}
                     {item.website && (
@@ -343,7 +343,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
                         rel="noopener noreferrer"
                         className="flex items-center gap-1.5 text-primary hover:underline"
                       >
-                        <ExternalLink className="w-3.5 h-3.5" />
+                        <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
                         <span>Visit Store</span>
                       </a>
                     )}
@@ -356,18 +356,18 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
                   )}
                 </div>
 
-                <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-foreground flex items-center gap-0.5">
-                      <IndianRupee className="w-5 h-5" />
+                <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+                  <div className="text-left sm:text-right">
+                    <p className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-0.5">
+                      <IndianRupee className="w-4 sm:w-5 h-4 sm:h-5" />
                       {formatPrice(item.priceRange.min)}
                       {item.priceRange.min !== item.priceRange.max && (
-                        <span className="text-base font-normal text-muted-foreground">
+                        <span className="text-sm sm:text-base font-normal text-muted-foreground">
                           {" - "}₹{formatPrice(item.priceRange.max)}
                         </span>
                       )}
                     </p>
-                    <span className="text-xs text-muted-foreground">VENDOR PRICE</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline">VENDOR PRICE</span>
                   </div>
                   <Button
                     variant={isFavorite(item) ? "secondary" : "outline"}
