@@ -61,22 +61,22 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-10">
         {/* Page Title */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+        <div className="text-center mb-6 sm:mb-8 md:mb-12">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
             Local Price Comparison Tool
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto px-2">
             Upload your quotation and compare prices across local vendors. Get AI-powered market research instantly.
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
           {/* Form Panel */}
           <div className="lg:col-span-2">
-            <div className="lg:sticky lg:top-6">
+            <div className="lg:sticky lg:top-4 md:top-6">
               <PriceEntryForm
                 onAddEntry={handleAddEntry}
                 onAnalysisComplete={handleAnalysisComplete}
@@ -105,8 +105,8 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-16 py-6">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground">
+      <footer className="border-t border-border mt-10 sm:mt-16 py-4 sm:py-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 text-center text-xs sm:text-sm text-muted-foreground">
           <p>Vee Price Comparison — AI-powered local price research</p>
         </div>
       </footer>

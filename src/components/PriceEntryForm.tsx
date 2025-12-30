@@ -147,26 +147,26 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
   };
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-card p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <ClipboardCheck className="w-5 h-5 text-primary" />
+    <div className="bg-card rounded-xl border border-border shadow-card p-4 sm:p-6">
+      <div className="flex items-center gap-3 mb-4 sm:mb-6">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <ClipboardCheck className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         </div>
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">Research</h2>
-          <p className="text-sm text-muted-foreground">Add or upload pricing data</p>
+        <div className="min-w-0">
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">Research</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground truncate">Add or upload pricing data</p>
         </div>
       </div>
 
       <Tabs defaultValue="upload" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="upload" className="gap-2">
-            <FileUp className="w-4 h-4" />
-            Upload Quotation
+        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 h-auto">
+          <TabsTrigger value="upload" className="gap-1.5 sm:gap-2 text-xs sm:text-sm py-2">
+            <FileUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="truncate">Upload Quotation</span>
           </TabsTrigger>
-          <TabsTrigger value="manual" className="gap-2">
-            <Plus className="w-4 h-4" />
-            Manual Entry
+          <TabsTrigger value="manual" className="gap-1.5 sm:gap-2 text-xs sm:text-sm py-2">
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="truncate">Manual Entry</span>
           </TabsTrigger>
         </TabsList>
 
