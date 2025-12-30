@@ -62,16 +62,6 @@ const Index = () => {
       <Header />
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-10">
-        {/* Page Title */}
-        <div className="text-center mb-6 sm:mb-8 md:mb-12">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Local Price Comparison Tool
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto px-2">
-            Upload your quotation and compare prices across local vendors. Get AI-powered market research instantly.
-          </p>
-        </div>
-
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
           {/* Form Panel */}
