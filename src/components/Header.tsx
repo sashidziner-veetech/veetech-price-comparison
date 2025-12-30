@@ -1,4 +1,5 @@
 import { Search, MapPin } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   return (
@@ -15,6 +16,7 @@ const Header = () => {
         <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground flex-shrink-0">
           <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent" />
           <span className="hidden xs:inline sm:inline">Local Price Research</span>
+          <ThemeToggle />
         </div>
       </div>
     </header>
