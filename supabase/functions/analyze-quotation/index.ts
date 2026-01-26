@@ -1,8 +1,61 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+// Input validation schema
+const requestSchema = z.object({
+  location: z.string().min(1, "Location is required").max(200, "Location too long"),
+  productName: z.string().min(1).max(500).optional(),
+  specifications: z.string().max(2000).optional(),
+  quotedPrice: z.number().min(0).max(999999999).optional(),
+  mode: z.enum(['manual', 'quotation']).optional(),
+  quotationText: z.string().max(50000).optional(),
+}).refine(
+  data => data.mode === 'manual' ? !!data.productName : !!data.quotationText,
+  { message: 'Either productName (for manual mode) or quotationText is required' }
+);
+
+// Safe error messages - never expose internal details
+const getSafeErrorMessage = (error: unknown): { message: string; code: string } => {
+  console.error('Full error details:', error);
+  
+  if (error instanceof z.ZodError) {
+    return {
+      message: 'Invalid input parameters. Please check your request.',
+      code: 'VALIDATION_ERROR'
+    };
+  }
+  
+  if (error instanceof Error) {
+    if (error.message.includes('LOVABLE_API_KEY') || error.message.includes('SUPABASE')) {
+      return {
+        message: 'Service temporarily unavailable. Please try again later.',
+        code: 'SERVICE_CONFIG_ERROR'
+      };
+    }
+    if (error.message.includes('rate limit')) {
+      return {
+        message: 'Too many requests. Please try again in a moment.',
+        code: 'RATE_LIMIT_EXCEEDED'
+      };
+    }
+    if (error.message.includes('AI Gateway') || error.message.includes('upstream')) {
+      return {
+        message: 'Analysis service unavailable. Please try again later.',
+        code: 'UPSTREAM_ERROR'
+      };
+    }
+  }
+  
+  return {
+    message: 'An error occurred processing your request. Please try again.',
+    code: 'INTERNAL_ERROR'
+  };
 };
 
 serve(async (req) => {
@@ -11,9 +64,68 @@ serve(async (req) => {
   }
 
   try {
-    const { quotationText, location, productName, specifications, mode, quotedPrice } = await req.json();
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required', code: 'UNAUTHORIZED' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate JWT token
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
     
-    console.log('Analyzing for location:', location, 'Mode:', mode || 'quotation', 'Quoted Price:', quotedPrice);
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('SUPABASE configuration missing');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: authError } = await supabase.auth.getClaims(token);
+    
+    if (authError || !claimsData?.claims) {
+      console.error('Auth validation failed:', authError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token', code: 'INVALID_TOKEN' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log('Authenticated user:', userId);
+
+    // Parse and validate input
+    let rawBody;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON body', code: 'INVALID_JSON' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const validationResult = requestSchema.safeParse(rawBody);
+    if (!validationResult.success) {
+      console.error('Validation errors:', validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input parameters', 
+          code: 'VALIDATION_ERROR',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { quotationText, location, productName, specifications, mode, quotedPrice } = validationResult.data;
+    
+    console.log('Processing request - Location:', location, 'Mode:', mode || 'quotation');
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -96,15 +208,20 @@ Provide 5-10 realistic vendor comparisons. Include department stores, local shop
 
 Be realistic and provide credible vendor names and locations for the Indian market. Include department stores, local shops, and online marketplaces commonly found in Indian cities. Use INR (₹) for all prices.`;
 
-    // Build the user message based on mode
-    const userMessage = isManualSearch
-      ? `Find market prices for this product in location: ${location}
+    // Build the user message based on mode - sanitize inputs
+    const sanitizedLocation = location.slice(0, 200);
+    const sanitizedProductName = productName?.slice(0, 500) || '';
+    const sanitizedSpecifications = specifications?.slice(0, 2000) || 'None specified';
+    const sanitizedQuotationText = quotationText?.slice(0, 50000) || '';
 
-Product Name: ${productName}
-Specific Requirements: ${specifications || 'None specified'}
+    const userMessage = isManualSearch
+      ? `Find market prices for this product in location: ${sanitizedLocation}
+
+Product Name: ${sanitizedProductName}
+Specific Requirements: ${sanitizedSpecifications}
 
 Please provide realistic vendor comparisons with actual store names, addresses, and contact numbers for this location.`
-      : `Analyze this quotation for location: ${location}\n\nQuotation Content:\n${quotationText}`;
+      : `Analyze this quotation for location: ${sanitizedLocation}\n\nQuotation Content:\n${sanitizedQuotationText}`;
 
     console.log('Sending request to AI gateway...');
 
@@ -130,18 +247,18 @@ Please provide realistic vendor comparisons with actual store names, addresses, 
       
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
+          JSON.stringify({ error: 'Too many requests. Please try again in a moment.', code: 'RATE_LIMIT' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }),
+          JSON.stringify({ error: 'Service quota exceeded. Please try again later.', code: 'QUOTA_EXCEEDED' }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      throw new Error(`AI Gateway error: ${response.status}`);
+      throw new Error('AI Gateway upstream error');
     }
 
     const data = await response.json();
@@ -168,10 +285,9 @@ Please provide realistic vendor comparisons with actual store names, addresses, 
     );
 
   } catch (error) {
-    console.error('Error in analyze-quotation:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to analyze quotation';
+    const safeError = getSafeErrorMessage(error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: safeError.message, code: safeError.code }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
