@@ -148,7 +148,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
             </div>
             <h3 className="text-lg font-medium text-foreground mb-1">No analysis yet</h3>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              Upload a product quotation file and select a target location to compare prices across local vendors.
+              product quotation file and select a target location to compare prices from local vendors.
             </p>
           </div>
         </div>
