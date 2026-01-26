@@ -97,7 +97,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-10 sm:mt-16 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 text-center text-xs sm:text-sm text-muted-foreground">
-          <p>© 2026 Price Comparison Tool. All rights reserved</p>
+          <p>© 2026 <span className="text-primary">Price Comparison Tool</span>. All rights reserved</p>
         </div>
       </footer>
     </div>
