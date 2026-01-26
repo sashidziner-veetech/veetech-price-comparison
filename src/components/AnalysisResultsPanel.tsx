@@ -138,7 +138,7 @@ const AnalysisResultsPanel = ({ analysis, location, favorites, onAddToFavorites 
         <div className="p-4 md:p-6 border-b border-border">
           <h2 className="text-lg font-semibold text-foreground">Results</h2>
           <p className="text-sm text-muted-foreground">
-            Upload a quotation to see price comparisons
+            quotation to see price comparisons
           </p>
         </div>
         <div className="p-4 md:p-6">
