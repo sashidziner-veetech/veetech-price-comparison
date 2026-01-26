@@ -40,16 +40,8 @@ const LocationAutocomplete = ({
         defaultValue={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`h-11 pl-9 pr-9 ${className}`}
+        className={`h-11 pl-9 ${className}`}
       />
-      {!isLoaded && !error && (
-        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
-      )}
-      {error && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-destructive">
-          !
-        </span>
-      )}
     </div>
   );
 };
