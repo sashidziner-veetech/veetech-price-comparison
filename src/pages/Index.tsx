@@ -65,7 +65,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4">
-            Find Product <span className="text-primary">Research</span>
+            Price <span className="text-primary">Comparison Tool</span>
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
             AI-powered local price research to help you find the best deals and make smarter purchasing decisions.
