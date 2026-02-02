@@ -62,6 +62,16 @@ const Index = () => {
       <Header />
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-10">
+        {/* Hero Section */}
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4">
+            <span className="text-primary">Price</span> Comparison Tool
+          </h1>
+          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
+            AI-powered local price research to help you find the best deals and make smarter purchasing decisions.
+          </p>
+        </div>
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
           {/* Form Panel */}
