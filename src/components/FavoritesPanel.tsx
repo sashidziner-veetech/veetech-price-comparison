@@ -43,8 +43,8 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
       <div className="p-4 md:p-6 border-b border-border">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Heart className="w-5 h-5 text-primary fill-primary" />
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+              <Heart className="w-5 h-5 text-muted-foreground fill-muted-foreground" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-foreground">
@@ -69,7 +69,7 @@ const FavoritesPanel = ({ favorites, onRemove, onClear }: FavoritesPanelProps) =
         {/* Comparison Summary */}
         <div className="mt-4 p-3 sm:p-4 bg-secondary/50 rounded-lg">
           <div className="flex items-center gap-2 mb-3">
-            <Scale className="w-4 h-4 text-primary flex-shrink-0" />
+            <Scale className="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <span className="text-sm font-semibold text-foreground">Price Comparison</span>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
