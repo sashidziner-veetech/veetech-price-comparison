@@ -84,8 +84,8 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
   return (
     <div className="bg-card rounded-xl border border-border shadow-card p-4 sm:p-6">
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <ClipboardCheck className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+          <ClipboardCheck className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
         </div>
         <div className="min-w-0">
           <h2 className="text-base sm:text-lg font-semibold text-primary">Find Product Research</h2>
