@@ -88,7 +88,7 @@ const PriceEntryForm = ({ onAddEntry, onAnalysisComplete, estimatedPrice }: Pric
           <ClipboardCheck className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-base sm:text-lg font-semibold text-foreground">Find Product <span className="text-primary">Research</span></h2>
+          <h2 className="text-base sm:text-lg font-semibold text-primary">Find Product Research</h2>
           <p className="text-xs sm:text-sm text-muted-foreground truncate">Compare local vendor prices</p>
         </div>
       </div>
